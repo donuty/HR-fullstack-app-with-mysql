@@ -20,10 +20,11 @@
   "dependencies": {
     "axios": "^0.21.0",
     "body-parser": "^1.19.0",
+    "dotenv": "^16.0.0",
     "express": "^4.17.3",
     "jquery": "^3.1.1",
     "mongoose": "^5.10.15",
-    "mysql": "github:mysqljs/mysql",
+    "mysql2": "^2.3.3",
     "react": "^16.4",
     "react-dom": "^16.4"
   }
