@@ -2,11 +2,11 @@ const express = require('express');
 let app = express();
 const { getReposByUsername } = require('../helpers/github');
 var model = require('../database/mysql_model');
+var db = require('../database/mysql_connect');
 
 
 app.use(express.static(__dirname + '/../client/dist'));
 app.use(express.json());
-
 
 app.post('/repos', function (req, res) {
 
@@ -15,21 +15,14 @@ app.post('/repos', function (req, res) {
   getReposByUsername(repoName)
     .then((repos) => {
       var reposArr = repos.data;
-      // var bulkParam = [];
-      // reposArr.forEach(repo => {
-      //   var eachParam = [repo.id, repo.name, repo.url, repo.owner.login, repo.size];
-      //   bulkParam.push(`(${eachParam})`);
-      // })
-      // console.log(bulkParam);
-      var repo = reposArr[0];
-      var params = [repo.id, repo.name, repo.url, repo.owner.login, repo.size];
-      model.post(params, (err) => {
+      model.post(reposArr, (err) => {
         if (err) {
           res.status(404).send('did not add to database')
-        } else {
-          res.status(201).send('added to db successfully')
-        }
+        };
       })
+    })
+    .then(() => {
+      res.sendStatus(201);
     })
     .catch((err) => {
       console.log('error at server/post: ', err);
@@ -48,7 +41,7 @@ app.get('/repos', function (req, res) {
     if (err) {
       res.status(404).send('did not connect to db')
     } else {
-      console.log('values in result object from model.get: ', Object.values(results));
+      // console.log('values in result object from model.get: ', Object.values(results));
       res.status(200).send(results);
     }
   });

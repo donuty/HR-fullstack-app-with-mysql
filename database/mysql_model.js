@@ -4,18 +4,22 @@ module.exports = {
 
   post: function (params, callback) {
 
-    var queryStr = 'INSERT INTO repos (repo_id, repo_name, repo_url, owner_login, size) VALUES (?, ?, ?, ?, ?);'
+    params.forEach(repo => {
+      var eachParams = [repo.id, repo.name, repo.html_url, repo.owner.login, repo.size];
+      var queryStr = 'INSERT IGNORE INTO repos (repo_id, repo_name, repo_url, owner_login, size) VALUES (?, ?, ?, ?, ?);'
+        db.query(queryStr, eachParams, (err) => {
+          if (err) {
+            callback(err);
+          } else {
+            callback(null);
+          }
+        });
+      });
 
-    db.query(queryStr, params, function (err) {
-      if (err) {
-        console.log('error at query during post: ');
-        callback(err);
-      } else {
-        callback(null);
-      }
-      console.log('db.query(insert) successful');
-    });
   },
+
+
+
 
   get: function (callback) {
 
